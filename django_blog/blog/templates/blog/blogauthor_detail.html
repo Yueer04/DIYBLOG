@@ -1,0 +1,63 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>{{ blog_author.user.get_full_name|default:blog_author.user.username }}</h1>
+
+<!-- 新增：显示账户名和邮箱 -->
+<div class="mb-3">
+    <strong>Username:</strong>
+    <p>{{ blog_author.user.username }}</p>
+</div>
+<div class="mb-3">
+    <strong>Email:</strong>
+    <p>{{ blog_author.user.email }}</p>
+</div>
+
+<p>{{ blog_author.bio|linebreaks }}</p>
+
+<!-- 关注数据展示 -->
+<div class="d-flex gap-4 mb-4">
+    <div>
+        <strong>Following</strong>
+        <p><a href="{% url 'author-following' blog_author.pk %}">{{ following_count }}</a></p>
+    </div>
+    <div>
+        <strong>Followers</strong>
+        <p><a href="{% url 'author-followers' blog_author.pk %}">{{ followers_count }}</a></p>
+    </div>
+    <div>
+        <strong>Blogs</strong>
+        <p>{{ author_blogs.count }}</p>
+    </div>
+</div>
+
+<!-- 关注/取消关注按钮 -->
+{% if user.is_authenticated and user.blogauthor and user.blogauthor != blog_author %}
+    {% if is_following %}
+        <form action="{% url 'unfollow-author' blog_author.pk %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Unfollow</button>
+        </form>
+    {% else %}
+        <form action="{% url 'follow-author' blog_author.pk %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Follow</button>
+        </form>
+    {% endif %}
+{% endif %}
+
+<!-- 博主文章列表 -->
+<h3>Articles</h3>
+{% if author_blogs %}
+    <ul class="list-group">
+        {% for blog in author_blogs %}
+            <li class="list-group-item">
+                <a href="{% url 'blog-detail' blog.pk %}">{{ blog.name }}</a>
+                <small class="text-muted"> {{ blog.post_date|date:"Y-m-d" }}</small>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No articles published yet.</p>
+{% endif %}
+{% endblock %}

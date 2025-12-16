@@ -1,0 +1,181 @@
+{% extends "base_generic.html" %}
+{% load static %}  <!-- 新增这一行！加载 static 标签库 -->
+
+{% block content %}
+<h1>DIY Blog Home</h1>
+
+<p>Welcome to <em>DIY Blog</em>, a very basic Django blogging website developed as an <a href="https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/django_assessment_blog">assessment task</a> for the Django learning module on the Mozilla Developer Network.</p>
+
+<!-- 头部横幅 -->
+<div class="bg-primary text-white p-5 mb-4 rounded">
+    <div class="container">
+        <h1 class="display-4">DIY Blog</h1>
+        <p class="lead">Share Technical Insights,Document Your Dev Journey</p>
+        <div class="mt-4">
+            <form class="d-flex" action="{% url 'blog-search' %}" method="get">
+                <input class="form-control me-2" type="search" name="q" placeholder="搜索文章、作者或标签" aria-label="Search" style="width: 500px;">
+                <button class="btn btn-light" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- 左侧主内容区 -->
+    <div class="col-md-8">
+        <!-- 最新文章 -->
+        <div class="card mb-4">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">Latest Posts</h2>
+                <a href="{% url 'blogs' %}" class="text-primary small">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for blog in latest_blogs %}
+                    <li class="list-group-item p-3">
+                        <div class="d-flex justify-content-between">
+                            <h3 class="h6 mb-1">
+                                <a href="{{ blog.get_absolute_url }}" class="text-dark">{{ blog.name }}</a>
+                            </h3>
+                            <small class="text-muted">{{ blog.post_date|date:"Y-m-d" }}</small>
+                        </div>
+                        <p class="text-muted small mb-2">{{ blog.description|truncatechars:150 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <!-- 修复：作者链接指向真正的作者详情页（blog-author-detail） -->
+                                <a href="{% url 'blog-author-detail' blog.author.pk %}" class="text-primary">
+                                    {{ blog.author.user.get_full_name|default:blog.author.user.username }}
+                                </a>
+                            </div>
+                            <div class="text-muted small">
+                                <span class="me-3"><i class="bi bi-eye"></i> {{ blog.views|default:0 }}</span>
+                                <span class="me-3"><i class="bi bi-comment"></i> {{ blog.comments.count }}</span>
+                                <!-- 新增：收藏数显示 -->
+                                <span class="me-3"><i class="bi bi-star"></i> {{ blog.collection_count|default:0 }}
+                            </div>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item p-3">No articles published yet</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 热门文章 -->
+        <div class="card">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">Trending Recommendations</h2>
+                <a href="{% url 'popular-blogs' %}" class="text-primary small">More Trending</a>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for blog in popular_blogs|default:latest_blogs %}
+                    <li class="list-group-item p-3">
+                        <div class="d-flex">
+                            <div class="me-3 fs-3 text-primary fw-bold">
+                                {{ forloop.counter }}
+                            </div>
+                            <div>
+                                <h3 class="h6 mb-1">
+                                    <a href="{{ blog.get_absolute_url }}" class="text-dark">{{ blog.name }}</a>
+                                </h3>
+                                <p class="text-muted small">
+                                    <!-- 修复：作者链接指向真正的作者详情页（blog-author-detail） -->
+                                    <a href="{% url 'blog-author-detail' blog.author.pk %}" class="text-primary">
+                                        {{ blog.author.user.get_full_name|default:blog.author.user.username }}
+                                    </a>
+                                    · {{ blog.post_date|date:"Y-m-d" }}
+                                    · <i class="bi bi-star"></i> {{ blog.collection_count|default:0 }} Collection
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item p-3">No trending articles yet</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧边栏 -->
+    <div class="col-md-4">
+        <!-- 分类导航 -->
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h2 class="h5 mb-0"> Article Categories</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for category in categories|default:'' %}
+                    <div class="col-6 mb-2">
+                        <a href="{% url 'blogs-by-category' category.id %}" class="text-dark">{{ category.name }}</a>
+                        <span class="badge bg-secondary">{{ category.blog_count }}</span>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-muted">No categories yet</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- 推荐博主 -->
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h2 class="h5 mb-0">Recommended Bloggers</h2>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for author in top_authors|default:'' %}
+                    <li class="list-group-item p-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <img src="{% static 'images/default-avatar.png' %}" alt="{{ author.user.get_full_name }}" class="rounded-circle" width="50" height="50">
+                            </div>
+                            <div>
+                                <h3 class="h6 mb-0">
+                                    <a href="{% url 'blog-author-detail' author.pk %}" class="text-dark">{{ author.user.get_full_name }}</a>
+                                </h3>
+                                <p class="text-muted small">{{ author.blogs.count }} articles</p>
+                            </div>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item p-3"> No recommended bloggers yet</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 公告栏 -->
+        <div class="card">
+            <div class="card-header bg-light">
+                <h2 class="h5 mb-0">Announcement</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">Welcome to the DIY Blog platform! Here you can share your technical insights and programming experience.</p>
+                <p class="text-muted small">New users can apply to become a blogger after registration. Publish your first technical blog post!</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .sidebar-nav {
+        margin-top: 20px;
+        padding: 0;
+        list-style: none;
+    }
+    .bi {
+        vertical-align: -0.125em;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<!-- 引入Bootstrap图标 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+{% endblock %}

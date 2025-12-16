@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    {% if form.instance.id %}Edit Blog{% else %}Create New Blog{% endif %} - DIY Blog
+{% endblock %}
+
+{% block content %}
+    <h1>{% if form.instance.id %}Edit Blog Post{% else %}Create New Blog Post{% endif %}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">{% if form.instance.id %}Update{% else %}Create{% endif %}</button>
+        {% if form.instance.id %}
+            <a href="{% url 'blog-detail' form.instance.id %}" class="btn btn-outline-secondary">Cancel</a>
+        {% else %}
+            <a href="{% url 'user-profile' %}" class="btn btn-outline-secondary">Cancel</a>
+        {% endif %}
+    </form>
+{% endblock %}

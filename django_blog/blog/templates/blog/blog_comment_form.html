@@ -1,0 +1,16 @@
+<!-- 新增以下全部 -->
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h2>Add Comment</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}  <!-- 自动渲染评论表单 -->
+    
+    <!-- 关键修改：用 URL 中的 pk 替代 form.instance.blog.pk -->
+    <button type="submit">Submit Comment</button>
+    <a href="{% url 'blog-detail' pk=request.resolver_match.kwargs.pk %}">Cancel</a>
+</form>
+
+{% endblock %}

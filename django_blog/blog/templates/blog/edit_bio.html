@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Edit Bio - DIY Blog{% endblock %}
+
+{% block content %}
+    <h1>Edit Your Bio</h1>
+    <p>Update your blogger profile information below:</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="{% url 'user-profile' %}" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+{% endblock %}

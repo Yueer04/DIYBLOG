@@ -1,0 +1,76 @@
+{% extends "base_generic.html" %}
+
+{% block title %}{{ user.get_username }}'s Profile - DIY Blog{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ user.get_full_name|default:user.get_username }}'s Profile</h1>
+        <a href="{% url 'blog-create' %}" class="btn btn-primary btn-lg rounded-circle" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 24px;">+</a>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Account Information</h5>
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    {% if user.first_name or user.last_name %}
+                        <p><strong>Name:</strong> {{ user.get_full_name }}</p>
+                    {% endif %}
+                    {% if blog_author %}
+                        <p><strong>Bio:</strong> {{ blog_author.bio|linebreaks }}</p>
+                        <div class="d-flex gap-2">
+                           <a href="{% url 'edit-bio' %}" class="btn btn-sm btn-outline-secondary">Edit Bio</a>
+                           <a href="{% url 'user-profile-update' %}" class="btn btn-sm btn-outline-secondary">Edit Profile</a>
+                        </div>
+                        
+                        <!-- 关注信息移到卡片内部 -->
+                        <div class="mt-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>关注</strong>
+                                    <p>{{ user.following.count }}</p>
+                                </div>
+                                <div>
+                                    <strong>粉丝</strong>
+                                    <p>{{ blog_author.followers.count }}</p>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 mt-2">
+                                <a href="{% url 'my-following' %}" class="btn btn-sm btn-outline-secondary">我的关注</a>
+                                <a href="{% url 'my-followers' %}" class="btn btn-sm btn-outline-secondary">我的粉丝</a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p>You are not a blogger yet. <a href="{% url 'become-blogger' %}">Become a blogger</a> to start posting!</p>
+                        <a href="{% url 'user-profile-update' %}" class="btn btn-sm btn-outline-secondary">Edit Profile</a>
+                    {% endif %}
+                </div> <!-- 闭合 card-body -->
+            </div> <!-- 闭合 card -->
+        </div> <!-- 闭合 col-md-4 -->
+
+        <div class="col-md-8">
+            <h3>My Blog Posts</h3>
+            {% if my_blogs %}
+                <ul class="list-group">
+                    {% for blog in my_blogs %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="{% url 'blog-detail' blog.pk %}">{{ blog.name }}</a>
+                                <span class="badge bg-{{ blog.is_published|yesno:'success,secondary' }}">
+                                    {{ blog.is_published|yesno:'Published,Draft' }}
+                                </span>
+                            </div>
+                            <small>Posted: {{ blog.post_date|date:"Y-m-d" }} | Last updated: {{ blog.update_date|date:"Y-m-d" }}</small>
+                            <p>{{ blog.description|truncatechars:150 }}</p>
+                            <a href="{% url 'blog-update' blog.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>You don't have any blog posts yet. Click the + button to create your first post!</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

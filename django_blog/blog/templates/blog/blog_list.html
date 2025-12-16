@@ -1,0 +1,72 @@
+<!-- 新增以下全部 -->
+{% extends "base_generic.html" %}
+
+{% block title %}
+    {% if current_category %}Blogs in {{ current_category.name }} | {% endif %}DIY Blog
+{% endblock %}
+
+{% block content %}
+    <h1>
+        {% if current_category %}
+            Blogs in {{ current_category.name }}
+        {% else %}
+            All Blogs
+        {% endif %}
+    </h1>
+
+    {% if blog_list %}
+        <div class="row row-cols-1 g-4">
+            {% for blog in blog_list %}
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h2 class="card-title h5">
+                                <a href="{% url 'blog-detail' blog.id %}" class="text-dark">{{ blog.name }}</a>
+                            </h2>
+                            <p class="card-text text-muted small">
+                                By <a href="{% url 'blog-author-detail' blog.author.id %}">{{ blog.author.user.get_full_name }}</a>
+                                | {{ blog.post_date|date:"Y-m-d" }}
+                                | Views: {{ blog.views }}
+                                | <i class="bi bi-star"></i> {{ blog.collection_count|default:0 }}  <!-- 收藏数 -->
+                            </p>
+                            <p class="card-text">{{ blog.description|truncatechars:150 }}</p>
+                            <a href="{% url 'blog-detail' blog.id %}" class="btn btn-sm btn-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- 分页控件（可选） -->
+        {% if is_paginated %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+
+    {% else %}
+        <p class="text-muted">No blogs found in this category.</p>
+    {% endif %}
+{% endblock %}

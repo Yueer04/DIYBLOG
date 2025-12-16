@@ -1,0 +1,18 @@
+<!-- 新增以下全部 -->
+{% extends "base_generic.html" %}  <!-- 修正后的路径 -->
+
+{% block title %}Register - Django Blog{% endblock %}
+
+{% block content %}
+    <h1>Register a New Account</h1>
+    <p>Fill out the form below to create your account. You can then add comments to blog posts!</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- 渲染注册表单（包含用户名、邮箱、密码） -->
+        <button type="submit">Register</button>
+    </form>
+
+    <hr>
+    <p>Already have an account? <a href="{% url 'login' %}?next={{ request.path }}">Login here</a></p>
+{% endblock %}

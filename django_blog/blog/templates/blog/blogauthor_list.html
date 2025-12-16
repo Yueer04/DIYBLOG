@@ -1,0 +1,52 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>All Blog Authors</h1>
+
+{% if blogger_list %}
+  <ul class="list-group">
+    {% for author in blogger_list %}
+      <li class="list-group-item mb-3">
+        <!-- 博主姓名可点击链接 -->
+        <h3><a href="{% url 'blog-author-detail' author.pk %}">{{ author.user.get_full_name }}</a></h3>
+        
+        <p><strong>Username:</strong> {{ author.user.username }}</p>
+        <p><strong>Bio:</strong> {{ author.bio|linebreaks }}</p>
+        <!-- 关键修改：用 blogs.count() 替代 blog_set.count() -->
+        <p><strong>Number of Blogs:</strong> {{ author.blogs.count }}</p>
+        
+        {% comment %}
+        <a href="{% url 'blogs-by-author' author.pk %}" class="btn btn-sm btn-primary">
+          View All Blogs by This Author
+        </a>
+        {% endcomment %}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>There are no blog authors available.</p>
+{% endif %}
+{% endblock %}
+
+<!-- 在现有内容下方添加 -->
+<div class="mt-4">
+    <div class="d-flex justify-content-between mb-3">
+        <div>
+            <strong>关注</strong>
+            <p><a href="{% url 'author-following' blog_author.pk %}">{{ blog_author.following.count }}</a></p>
+        </div>
+        <div>
+            <strong>粉丝</strong>
+            <p><a href="{% url 'author-followers' blog_author.pk %}">{{ blog_author.followers.count }}</a></p>
+        </div>
+        <div>
+            <strong>博客数</strong>
+            <p>{{ blog_author.blogs.count }}</p>
+        </div>
+    </div>
+    
+    <div class="mt-3">
+        <strong>Email:</strong>
+        <p>{{ blog_author.user.email }}</p>
+    </div>
+</div>

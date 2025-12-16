@@ -1,0 +1,83 @@
+<!-- 新增以下全部 -->
+{% extends "base_generic.html" %}
+{% load static %}
+
+{% block title %}Search Results - DIY Blog{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="h3 mb-4">Search Results</h1>
+    <p class="text-muted"><Keyword：{{ request.GET.q }}</p>
+
+    {% if search_blogs %}
+        <div class="card mb-4">
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for blog in search_blogs %}
+                    <li class="list-group-item p-3">
+                        <div class="d-flex justify-content-between">
+                            <h3 class="h6 mb-1">
+                                <a href="{{ blog.get_absolute_url }}" class="text-dark">{{ blog.name }}</a>
+                            </h3>
+                            <small class="text-muted">{{ blog.post_date|date:"Y-m-d" }}</small>
+                        </div>
+                        <p class="text-muted small mb-2">{{ blog.description|truncatechars:150 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="{% url 'blogs-by-author' blog.author.pk %}" class="text-primary">
+                                    {{ blog.author.user.get_full_name }}
+                                </a>
+                            </div>
+                            <div class="text-muted small">
+                                <span class="me-3"><i class="bi bi-eye"></i> {{ blog.views|default:0 }}</span>
+                                <span class="me-3"><i class="bi bi-comment"></i> {{ blog.comments.count }}</span>
+                                <!-- 新增收藏数 -->
+                                <span class="me-3"><i class="bi bi-star"></i> {{ blog.collection_count|default:0 }}</span>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 分页控件 -->
+        {% if is_paginated %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">上一页</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">上一页</span></li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?q={{ request.GET.q }}&page={{ num }}">{{ num }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">下一页</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">下一页</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            No articles found containing "{{ request.GET.q }}" . Please try a different keyword.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

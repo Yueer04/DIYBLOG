@@ -1,0 +1,15 @@
+<!-- 新增以下全部 -->
+{% extends "base_generic.html" %}
+
+{% block title %}Become a Blogger - DIY Blog{% endblock %}
+
+{% block content %}
+    <h1>Become a Blogger</h1>
+    <p>Fill out your bio and become a blogger to start publishing blog posts!</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- 显示个人简介输入框 -->
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}

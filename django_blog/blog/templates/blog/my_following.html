@@ -1,0 +1,44 @@
+{% extends "base_generic.html" %}
+
+{% block title %}My Following - DIY Blog{% endblock %}
+
+{% block content %}
+    <h1>My Following</h1>
+    {% if following_list %}
+        <ul class="list-group">
+            {% for author in following_list %}
+                <li class="list-group-item">
+                    <a href="{% url 'blog-author-detail' author.pk %}">
+                        {{ author.user.get_full_name|default:author.user.username }}
+                    </a>
+                    <button class="btn btn-sm btn-danger float-end" id="unfollowBtn{{ author.pk }}" data-pk="{{ author.pk }}">
+                        Unfollow
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't followed anyone yet.</p>
+    {% endif %}
+
+    <script>
+        // 为每个取消关注按钮绑定事件（逻辑同步骤5）
+        document.querySelectorAll('[id^="unfollowBtn"]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const pk = this.getAttribute('data-pk');
+                fetch(`{% url 'unfollow-author' 0 %}`.replace('0', pk), {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.status === 'success') {
+                          location.reload();
+                      }
+                  });
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% block content %}
+<h1>{{ blog.name }}</h1>
+<p><strong>Post date</strong> {{ blog.post_date }}</p>
+<p><strong>Author:</strong> <a href="{% url 'blog-author-detail' blog.author.pk %}">{{ blog.author }}</a></p>
+<p><strong>Category:</strong> <a href="{% url 'blogs-by-category' blog.category.id %}">{{ blog.category.name }}</a></p> <!-- 新增分类显示 -->
+<p><strong>Description:</strong></p>
+<!-- 新增统计信息 -->
+<p class="text-muted">
+    <i class="bi bi-eye"></i> Views: {{ blog.views }} | 
+    <i class="bi bi-star"></i> Collections: {{ blog.collections.count }}
+</p>
+<p style="white-space:pre-wrap;">{{ blog.description }}</p>
+
+<div style="margin-left:20px;margin-top:20px">
+  <h4>Comments ({{ blog.comments.count }})</h4> <!-- 显示评论数量 -->
+
+  {% for comment in blog.comments.all %} <!-- 关键修改：使用related_name -->
+  <hr>
+  <p>{{comment.author}} ({{comment.post_date}}) - {{comment.description}}</p>
+  {% empty %}
+  <p>No comments yet.</p> <!-- 无评论时显示 -->
+  {% endfor %}
+  <hr>
+  
+  {% if user.is_authenticated %}
+    <a href="{% url 'blog_comment' blog.id %}" class="btn btn-sm btn-primary">Add a new comment</a>
+  {% else %}
+    <p><a href="{% url 'login'%}?next={{request.path}}">Login</a> to add a new comment</p>
+  {% endif %} 
+</div>
+{% endblock %}

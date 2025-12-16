@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %}
+
+{% block title %}My followers - DIY Blog{% endblock %}
+
+{% block content %}
+    <h1>My followers</h1>
+    {% if followers_list %}
+        <ul class="list-group">
+            {% for author in followers_list %}
+                <li class="list-group-item">
+                    <a href="{% url 'blog-author-detail' author.pk %}">
+                        {{ author.user.get_full_name|default:author.user.username }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You don't have any followers yet.</p>
+    {% endif %}
+{% endblock %}
