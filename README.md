@@ -84,8 +84,6 @@ django_blog/                  # 项目根目录
 │   ├── blog_covers/          # 博客封面图
 │   ├── blog_content_images/  # 博客内容图片
 │   └── blog_videos/          # 博客视频
-├── staticfiles/              # 生产环境静态文件收集目录（部署时生成）
-└── requirements.txt          # 项目依赖列表
 ```
 
 ## 快速开始
