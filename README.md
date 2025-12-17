@@ -20,70 +20,7 @@ DIY Blog是一个使用Django框架开发的简易博客平台，允许用户注
 ## 项目结构
 
 ```
-django_blog/                  # 项目根目录
-├── db.sqlite3                # SQLite数据库文件
-├── manage.py                 # Django命令行工具
-├── diyblog/                  # 项目主配置包
-│   ├── __init__.py           # 包初始化文件
-│   ├── asgi.py               # ASGI配置（异步部署）
-│   ├── settings.py           # 项目设置（数据库、应用等配置）
-│   ├── urls.py               # 主URL配置
-│   └── wsgi.py               # WSGI配置（同步部署）
-├── blog/                     # 博客应用
-│   ├── __init__.py           # 包初始化文件
-│   ├── admin.py              # 后台管理配置
-│   ├── apps.py               # 应用配置
-│   ├── forms.py              # 表单定义（评论表单等）
-│   ├── models.py             # 数据模型（博客、用户、评论等）
-│   ├── views.py              # 视图逻辑（页面渲染、数据处理）
-│   ├── urls.py               # 应用URL路由配置
-│   ├── migrations/           # 数据库迁移文件目录
-│   │   └── __init__.py
-│   ├── templates/            # 模板文件目录
-│   │   ├── blog/             # 博客应用模板
-│   │   │   ├── index.html    # 首页模板
-│   │   │   ├── blog_list.html # 博客列表模板
-│   │   │   ├── blog_detail.html # 博客详情模板
-│   │   │   ├── blogcomment_form.html # 评论表单模板
-│   │   │   ├── register.html # 用户注册模板
-│   │   │   ├── user_profile.html # 用户个人主页模板
-│   │   │   ├── blogauthor_list.html # 博主列表模板
-│   │   │   ├── blogauthor_detail.html # 博主详情模板
-│   │   │   ├── become_blogger.html # 成为博主申请模板
-│   │   │   ├── user_profile_update.html # 用户资料编辑模板
-│   │   │   ├── edit_bio.html # 个人简介编辑模板
-│   │   │   ├── blog_search.html # 博客搜索结果模板
-│   │   │   ├── author_following.html # 博主关注列表模板
-│   │   │   ├── author_followers.html # 博主粉丝列表模板
-│   │   │   ├── my_collections.html # 我的收藏列表模板
-│   │   │   ├── blog_create.html # 创建博客模板
-│   │   │   ├── blog_update.html # 更新博客模板
-│   │   │   └── blogs_by_category.html # 按分类筛选博客模板
-│   │   └── registration/     # 认证相关模板
-│   │       ├── password_reset_complete.html # 密码重置完成模板
-│   │       ├── password_reset_done.html # 密码重置邮件发送完成模板
-│   │       ├── login.html    # 登录模板
-│   │       ├── password_reset_form.html # 密码重置表单模板
-│   │       └── password_reset_confirm.html # 密码重置确认模板
-│   ├── management/           # 自定义管理命令目录
-│   │   ├── __init__.py
-│   │   └── commands/
-│   │       ├── __init__.py
-│   │       └── generate_test_data.py # 生成测试数据命令
-│   └── static/               # 应用内静态文件（可选）
-│       └── blog/             # 应用专属静态资源
-│           ├── css/
-│           ├── js/
-│           └── images/
-├── static/                   # 项目级静态文件目录（CSS、JS、图片等）
-│   ├── css/                  # 样式表
-│   ├── js/                   # JavaScript文件
-│   └── images/               # 图片资源（如default-avatar.png）
-├── media/                    # 用户上传文件目录
-│   ├── blog_covers/          # 博客封面图
-│   ├── blog_content_images/  # 博客内容图片
-│   └── blog_videos/          # 博客视频
-```
+
 
 ## 快速开始
 
