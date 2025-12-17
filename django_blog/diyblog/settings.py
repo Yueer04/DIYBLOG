@@ -122,4 +122,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# 静态文件配置
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']  # 开发环境静态文件目录
+STATIC_ROOT = BASE_DIR / 'staticfiles'    # 生产环境收集目录
+
+# 媒体文件配置（用户上传的文件）
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'  # 媒体文件存储路径
+
+# 限制上传文件大小为50MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50*1024*1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800

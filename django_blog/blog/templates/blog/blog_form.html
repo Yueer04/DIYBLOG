@@ -1,4 +1,6 @@
+<!-- 新增以下全部 -->
 {% extends "base_generic.html" %}
+{% load static %}
 
 {% block title %}
     {% if form.instance.id %}Edit Blog{% else %}Create New Blog{% endif %} - DIY Blog
@@ -7,14 +9,71 @@
 {% block content %}
     <h1>{% if form.instance.id %}Edit Blog Post{% else %}Create New Blog Post{% endif %}</h1>
 
-    <form method="post">
+    <!-- 关键：表单必须加 enctype="multipart/form-data" 才能上传文件 -->
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
+        
+        <!-- 原有字段 -->
+        <div class="mb-3">
+            {{ form.name.label_tag }}
+            {{ form.name }}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.category.label_tag }}
+            {{ form.category }}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.description.label_tag }}
+            {{ form.description }}
+        </div>
+        
+        <!-- 封面图上传 -->
+        <div class="mb-3">
+            {{ form.cover_image.label_tag }}
+            {{ form.cover_image }}
+            <small class="text-muted">Allowed formats: JPG, JPEG, PNG</small>
+        </div>
+        
+        <!-- 内容图片上传（单张，可多次添加） -->
+        <div class="mb-3">
+            {{ form.content_image.label_tag }}
+            {{ form.content_image }}
+            <small class="text-muted">Upload one image at a time. Submit the form again to add more.</small>
+        </div>
+        
+        <!-- 视频上传 -->
+        <div class="mb-3">
+            {{ form.video.label_tag }}
+            {{ form.video }}
+            <small class="text-muted">Allowed formats: MP4, MOV, WEBM (max 50MB)</small>
+        </div>
+        
+        <div class="mb-3">
+            {{ form.is_published.label_tag }}
+            {{ form.is_published }}
+        </div>
+        
         <button type="submit" class="btn btn-primary">{% if form.instance.id %}Update{% else %}Create{% endif %}</button>
         {% if form.instance.id %}
             <a href="{% url 'blog-detail' form.instance.id %}" class="btn btn-outline-secondary">Cancel</a>
         {% else %}
-            <a href="{% url 'user-profile' %}" class="btn btn-outline-secondary">Cancel</a>
+            <a href="{% url 'index' %}" class="btn btn-outline-secondary">Cancel</a>
         {% endif %}
     </form>
+
+    <!-- 显示已上传的内容图片（编辑时） -->
+    {% if form.instance.id and form.instance.content_images.all %}
+        <div class="mt-4">
+            <h5>Uploaded Content Images:</h5>
+            <div class="row row-cols-1 row-cols-md-3 g-3">
+                {% for img in form.instance.content_images.all %}
+                    <div class="col">
+                        <img src="{{ img.image.url }}" alt="Blog image" class="img-thumbnail" style="height: 150px; object-fit: cover;">
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

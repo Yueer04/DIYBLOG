@@ -1,9 +1,41 @@
 {% block content %}
 <h1>{{ blog.name }}</h1>
+
+<!-- 显示封面图 -->
+{% if blog.cover_image %}
+    <img src="{{ blog.cover_image.url }}" alt="{{ blog.name }}" class="img-fluid mb-4" style="max-height: 400px; object-fit: cover; width: 100%;">
+{% endif %}
+
 <p><strong>Post date</strong> {{ blog.post_date }}</p>
 <p><strong>Author:</strong> <a href="{% url 'blog-author-detail' blog.author.pk %}">{{ blog.author }}</a></p>
 <p><strong>Category:</strong> <a href="{% url 'blogs-by-category' blog.category.id %}">{{ blog.category.name }}</a></p> <!-- 新增分类显示 -->
 <p><strong>Description:</strong></p>
+
+<!-- 显示视频 -->
+{% if blog.video %}
+    <div class="mb-4">
+        <h5>Embedded Video:</h5>
+        <video controls class="w-100" style="max-height: 400px;">
+            <source src="{{ blog.video.url }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+{% endif %}
+
+<!-- 显示内容图片 -->
+{% if blog.content_images.all %}
+    <div class="mt-4">
+        <h5>Gallery:</h5>
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+            {% for img in blog.content_images.all %}
+                <div class="col">
+                    <img src="{{ img.image.url }}" alt="Blog image" class="img-thumbnail" style="height: 200px; object-fit: cover; width: 100%;">
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
 <!-- 新增统计信息 -->
 <p class="text-muted">
     <i class="bi bi-eye"></i> Views: {{ blog.views }} | 

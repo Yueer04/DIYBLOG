@@ -1,15 +1,21 @@
-# 新增
+# 新增以下全部
 from django.utils import timezone
 # blog/admin.py
 from django.contrib import admin
 # 导入所有需要的模型，包括新增的 Collection
-from .models import Blog, BlogAuthor, BlogComment, Category, Collection  # 关键：添加 Collection
+from .models import Blog, BlogAuthor, BlogComment, Category, Collection, BlogImage  # 导入BlogImage  # 关键：添加 Collection
 # 删除
 """
 # Minimal registration of Models.
 admin.site.register(BlogAuthor)
 admin.site.register(BlogComment)
 """
+
+# 新增BlogImage的Admin配置
+@admin.register(BlogImage)
+class BlogImageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'image', 'uploaded_at')
+    readonly_fields = ('uploaded_at',)
 
 # 新增 BlogInline
 class BlogInline(admin.TabularInline):
@@ -51,11 +57,16 @@ class BlogAdmin(admin.ModelAdmin):
     ordering = ('-post_date',)  # 按发布日期降序排列
     list_per_page = 50  # 每页显示50条记录
     fields = [
-        ('name', 'author'),  # 博客标题和作者（并排显示）
-        'description',  # 博客内容
-        ('post_date', 'update_date'),  # 发布日期和更新日期（并排显示）
-        'is_published'  # 发布状态
+        ('name', 'author'),
+        'category',  # 新增分类字段显示
+        'description',
+        ('post_date', 'update_date'),
+        'is_published',
+        'cover_image',  # 新增封面图
+        'video',  # 新增视频
+        'views'
     ]
+    filter_horizontal = ('content_images',)  # 支持在后台选择内容图片
     readonly_fields = ('post_date', 'update_date')  # 日期字段为只读
 
     # 自定义字段：显示评论数量

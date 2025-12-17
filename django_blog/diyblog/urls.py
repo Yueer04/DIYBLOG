@@ -32,5 +32,5 @@ urlpatterns = [
     path('', RedirectView.as_view(url='/blog/', permanent=True)),
     # 添加认证相关URL
     path('accounts/', include('django.contrib.auth.urls')),  # 新增这一行
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # 媒体文件路由
     # 新增：配置媒体文件的URL映射
