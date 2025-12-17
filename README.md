@@ -70,7 +70,6 @@ django_blog/                  # 项目根目录
 │   │   └── commands/
 │   │       ├── __init__.py
 │   │       └── generate_test_data.py # 生成测试数据命令
-│   ├── tests.py              # 单元测试文件
 │   └── static/               # 应用内静态文件（可选）
 │       └── blog/             # 应用专属静态资源
 │           ├── css/
